@@ -4,6 +4,7 @@ import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.FirebaseApp
 import dev.gitlive.firebase.FirebaseException
 import dev.gitlive.firebase.firebase
+import dev.gitlive.firebase.perf.metrics.HttpMetric
 import dev.gitlive.firebase.perf.metrics.Trace
 
 actual val Firebase.performance: FirebasePerformance
@@ -17,9 +18,30 @@ actual fun Firebase.performance(app: FirebaseApp): FirebasePerformance = rethrow
     FirebasePerformance(firebase.performance(app.js))
 }
 
-actual class FirebasePerformance internal constructor(val js: firebase.performance.Performance) {
+actual class FirebasePerformance internal constructor(private val js: firebase.performance.Performance) {
 
     actual fun newTrace(traceName: String): Trace = Trace(js.trace(js, traceName))
+
+    actual fun isPerformanceCollectionEnabled() = true
+
+    actual fun setPerformanceCollectionEnabled(enable: Boolean) {
+    }
+
+    actual fun newHttpMetric(url: Any, httpMethod: String): HttpMetric = HttpMetric()
+
+    actual fun newHttpMetric(url: String, httpMethod: String): HttpMetric = HttpMetric()
+
+    actual fun getAttributes(): MutableMap<String, String> = mutableMapOf()
+
+    actual fun getAttribute(attribute: String): String? = null
+
+    actual fun putAttribute(attribute: String, value: String) {
+    }
+
+    actual fun removeAttribute(attribute: String) {
+    }
+
+
 }
 
 actual open class FirebasePerformanceException(code: String, cause: Throwable) :
